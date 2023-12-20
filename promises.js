@@ -28,18 +28,22 @@ function deleteLastPost() {
   });
 }
 
-function userupdatesapost() {
-  Promise.all([createPost(), updateLastUserActivityTime()])
-    .then(([createPostResolves, updateLastUserActivityTimeResolves]) => {
-      console.log('Last Activity Time:', updateLastUserActivityTimeResolves);
-      console.log('Created Post:', createPostResolves);
-      return deleteLastPost(); // Returning promise for post deletion
-    })
-    .then((deletePostStatus) => {
-      console.log(deletePostStatus);
-      console.log('Remaining Posts:', user.username); // Logging remaining posts
-    })
-    .catch((err) => console.error(err));
+async function userupdatesapost() {
+  try {
+    const [createPostResolves, updateLastUserActivityTimeResolves] = await Promise.all([
+      createPost(),
+      updateLastUserActivityTime()
+    ]);
+
+    console.log('Last Activity Time:', updateLastUserActivityTimeResolves);
+    console.log('Created Post:', createPostResolves);
+
+    const deletePostStatus = await deleteLastPost();
+    console.log(deletePostStatus);
+    console.log('Remaining Posts:', user.username); // Logging remaining posts
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 userupdatesapost();
